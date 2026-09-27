@@ -1,0 +1,1150 @@
+# Enterprise E-Commerce Platform — Project Specification
+
+You are the lead architect and senior full-stack engineer responsible for designing and developing an enterprise-grade e-commerce platform similar in overall capability to Amazon / Flipkart.
+
+The application must be designed for:
+
+* High scalability
+* High availability
+* Security
+* Maintainability
+* Multi-vendor readiness
+* Large product catalogs
+* High concurrent traffic
+* Mobile-first user experience
+* AWS cloud deployment
+* Production use
+* Google Play Store deployment
+* Apple App Store deployment
+
+Do NOT attempt to build the entire application at once.
+
+We will develop this project in clearly defined phases. Each phase must be reviewed and approved before moving to the next phase.
+
+---
+
+# 1. Technology Stack
+
+## Mobile Frontend
+
+Use:
+
+* React Native
+* TypeScript
+* Expo
+* React Navigation / Expo Router where appropriate
+* React Query / TanStack Query for server state
+* Zustand or an equivalent lightweight state-management solution
+* Form validation using Zod or an appropriate equivalent
+* Secure token storage using platform-appropriate secure storage
+* Responsive UI suitable for Android and iOS
+* Push notifications
+* Deep linking
+* App version/update handling
+* Production-ready error handling
+* Analytics-ready architecture
+
+The application must be compatible with:
+
+* Android
+* iOS
+* Google Play Store
+* Apple App Store
+
+Do not use web-only React components or browser-specific APIs unless there is a clear mobile-compatible alternative.
+
+---
+
+# 2. Backend
+
+Use:
+
+* Python
+* FastAPI
+* Pydantic
+* SQLAlchemy 2.x
+* Alembic
+* PostgreSQL
+* Redis where required
+* Celery / background processing mechanism where appropriate
+
+Backend requirements:
+
+* REST API architecture
+* Versioned APIs
+* `/api/v1/...` style API structure
+* Authentication and authorization
+* Role-based access control
+* Request validation
+* Centralized exception handling
+* Structured logging
+* Audit logging
+* Pagination
+* Filtering
+* Sorting
+* Search
+* Rate limiting where required
+* Idempotency for important transactional APIs
+* Transaction management
+* Database migrations
+* Secure password handling
+* JWT/access-token architecture
+* Refresh-token architecture
+* API documentation using OpenAPI/Swagger
+* Health-check endpoints
+* Readiness/liveness endpoints
+* Production-ready configuration management
+
+Design the backend so that it can later evolve into independently scalable services if required.
+
+Do not introduce microservices unnecessarily during the first implementation. Start with a well-structured modular monolith unless there is a strong architectural reason otherwise.
+
+---
+
+# 3. Database
+
+Use:
+
+* PostgreSQL
+
+The database must be designed as an enterprise-grade relational model.
+
+Important principles:
+
+* Proper normalization
+* Appropriate denormalization only when justified
+* UUID primary keys where appropriate
+* Foreign-key relationships
+* Unique constraints
+* Check constraints
+* Indexes
+* Composite indexes
+* Audit columns
+* Soft-delete strategy where appropriate
+* Created/updated timestamps
+* Status fields using controlled values
+* Transaction-safe financial/order operations
+* Proper monetary data types
+* No floating-point values for money
+* Referential integrity
+* Avoid unnecessary duplication
+* Avoid JSON columns when a normalized relational structure is more appropriate
+
+All important database design decisions must be documented.
+
+---
+
+# 4. AWS Architecture
+
+The application will eventually be hosted in AWS.
+
+Design the application so it can be deployed using AWS services such as:
+
+* Amazon ECR
+* Amazon ECS / Fargate
+* Application Load Balancer
+* Amazon RDS PostgreSQL
+* ElastiCache Redis
+* S3
+* CloudFront
+* Route 53
+* AWS Secrets Manager / SSM Parameter Store
+* CloudWatch
+* IAM
+* SNS / SQS where appropriate
+* AWS WAF where appropriate
+
+Do not hard-code AWS-specific implementation unnecessarily.
+
+The architecture should allow local development while remaining production-ready for AWS.
+
+---
+
+# 5. E-Commerce Scope
+
+The application should eventually support functionality comparable to a modern large-scale e-commerce platform.
+
+The architecture should accommodate the following areas.
+
+## Customer
+
+* Registration
+* Login
+* Logout
+* Refresh session
+* Forgot password
+* OTP/email verification
+* Customer profile
+* Multiple addresses
+* Default address
+* Wishlist
+* Recently viewed products
+* Product reviews
+* Product ratings
+* Notifications
+* Order history
+* Order tracking
+* Returns
+* Refunds
+* Cancellations
+
+## Product Catalog
+
+* Categories
+* Subcategories
+* Brands
+* Products
+* Product variants
+* SKU
+* Product attributes
+* Product specifications
+* Product images
+* Product videos
+* Pricing
+* Discount pricing
+* Inventory
+* Stock status
+* Product tags
+* Search
+* Filters
+* Sorting
+* Related products
+* Recommended products
+
+The schema must support products with multiple variants such as:
+
+Example:
+
+T-Shirt
+
+* Size: S/M/L/XL
+* Color: Black/Blue/Red
+
+Each variant should be capable of having its own:
+
+* SKU
+* Price
+* Inventory
+* Images
+* Attributes
+
+---
+
+# 6. Cart
+
+Support:
+
+* Add product
+* Add variant
+* Update quantity
+* Remove item
+* Cart validation
+* Inventory validation
+* Price validation
+* Coupon application
+* Cart totals
+* Shipping charges
+* Tax calculation
+* Discounts
+
+Cart operations must be designed to handle concurrent requests safely.
+
+---
+
+# 7. Orders
+
+Design a robust order system supporting:
+
+* Order creation
+* Order items
+* Order status
+* Payment status
+* Fulfillment status
+* Shipping address snapshot
+* Billing address snapshot
+* Product price snapshot
+* Tax snapshot
+* Discount snapshot
+* Shipping charges
+* Order totals
+* Cancellation
+* Partial cancellation
+* Return
+* Partial return
+* Refund
+* Order history
+* Order status history
+
+Important:
+
+Order records must preserve historical information even if the original product, price, address, or customer information changes later.
+
+---
+
+# 8. Payments
+
+Design the architecture to support payment providers such as:
+
+* Razorpay
+* Stripe
+* Other payment gateways in the future
+
+Do NOT tightly couple the core order system to a single payment provider.
+
+Use a payment abstraction/service layer.
+
+Support:
+
+* Payment initiation
+* Payment verification
+* Payment success
+* Payment failure
+* Payment retry
+* Refund
+* Partial refund
+* Webhook handling
+* Idempotency
+* Payment transaction history
+
+Never store raw card information.
+
+---
+
+# 9. Shipping
+
+Architecture should support:
+
+* Shipping addresses
+* Delivery methods
+* Shipping charges
+* Shipment creation
+* Shipment tracking
+* Courier integration
+* Delivery status
+* Estimated delivery date
+* Package information
+* Returns
+
+The courier/shipping provider should be abstracted so providers can be changed later.
+
+---
+
+# 10. Promotions
+
+Support architecture for:
+
+* Coupons
+* Discount codes
+* Product discounts
+* Category discounts
+* Brand discounts
+* Percentage discounts
+* Fixed discounts
+* Minimum order value
+* Maximum discount
+* Coupon usage limits
+* Customer-specific coupons
+* Start/end dates
+* Promotion status
+
+---
+
+# 11. Admin
+
+The backend must be designed to support an administrative system.
+
+Admin capabilities should eventually include:
+
+* Dashboard
+* Customer management
+* Product management
+* Category management
+* Brand management
+* Inventory management
+* Order management
+* Payment management
+* Refund management
+* Coupon management
+* Promotion management
+* Reports
+* User management
+* Role management
+* Audit logs
+* Configuration management
+
+---
+
+# 12. Multi-Vendor Readiness
+
+Even if the first release is single-vendor, design the database so that the platform can later support multiple sellers/vendors.
+
+Potential entities:
+
+* Vendors
+* Vendor users
+* Vendor products
+* Vendor inventory
+* Vendor orders
+* Vendor payouts
+* Vendor commissions
+
+Do not over-engineer the first implementation.
+
+The model should be extensible without requiring a complete database redesign later.
+
+---
+
+# 13. Search
+
+The initial implementation can use PostgreSQL search where appropriate.
+
+However, design the architecture so it can later integrate with:
+
+* OpenSearch / Elasticsearch
+* Advanced product search
+* Autocomplete
+* Search ranking
+* Faceted search
+* Filtering
+
+Do not introduce OpenSearch unless required for the current implementation.
+
+---
+
+# 14. Notifications
+
+Design notification architecture supporting:
+
+* Push notifications
+* Email
+* SMS
+
+Examples:
+
+* Order placed
+* Payment successful
+* Payment failed
+* Order shipped
+* Order delivered
+* Order cancelled
+* Refund initiated
+* Refund completed
+* Promotional notifications
+
+Use an abstraction so notification providers can be replaced later.
+
+---
+
+# 15. Security
+
+Security is a first-class requirement.
+
+Implement:
+
+* Secure authentication
+* Password hashing
+* JWT/access tokens
+* Refresh tokens
+* Role-based authorization
+* API validation
+* Rate limiting
+* Input sanitization
+* Secure headers
+* CORS configuration
+* Secrets through environment variables
+* No secrets committed to Git
+* Audit logging
+* Secure file upload validation
+* SQL injection protection
+* Authentication brute-force protection
+* Proper permission checks
+
+Never expose:
+
+* Password hashes
+* Internal secrets
+* Payment credentials
+* AWS credentials
+* Sensitive customer information
+
+in API responses or logs.
+
+---
+
+# 16. Project Structure
+
+Create a clean repository structure.
+
+Suggested structure:
+
+```
+ecommerce/
+│
+├── mobile/
+│   ├── src/
+│   │   ├── components/
+│   │   ├── screens/
+│   │   ├── navigation/
+│   │   ├── hooks/
+│   │   ├── services/
+│   │   ├── store/
+│   │   ├── api/
+│   │   ├── utils/
+│   │   ├── types/
+│   │   └── constants/
+│   ├── assets/
+│   ├── app.json / app.config.ts
+│   └── package.json
+│
+├── backend/
+│   ├── app/
+│   │   ├── api/
+│   │   ├── core/
+│   │   ├── models/
+│   │   ├── schemas/
+│   │   ├── services/
+│   │   ├── repositories/
+│   │   ├── middleware/
+│   │   ├── workers/
+│   │   └── main.py
+│   ├── migrations/
+│   ├── tests/
+│   ├── requirements.txt
+│   └── Dockerfile
+│
+├── infrastructure/
+│
+├── docs/
+│
+├── .env.example
+├── docker-compose.yml
+└── README.md
+```
+
+You may modify this structure if there is a strong technical reason, but document the reason.
+
+---
+
+# 17. Development Methodology
+
+This is extremely important.
+
+DO NOT build everything in one step.
+
+Follow these phases.
+
+---
+
+# PHASE 1 — Requirements & Architecture
+
+Before writing application code:
+
+1. Analyze this specification.
+2. Identify missing requirements.
+3. Identify assumptions.
+4. Identify potentially conflicting requirements.
+5. Propose the overall system architecture.
+6. Propose major modules.
+7. Propose the database domains/entities.
+8. Identify important business rules.
+9. Identify security considerations.
+10. Identify scalability considerations.
+
+Do not start implementing the frontend or backend yet.
+
+---
+
+# PHASE 2 — DATABASE DESIGN
+
+This is the first implementation phase.
+
+Design the complete PostgreSQL data model.
+
+At minimum, analyze entities for:
+
+* Organizations / tenants if required
+* Users
+* Roles
+* Permissions
+* Customers
+* Addresses
+* Vendors
+* Categories
+* Brands
+* Products
+* Product variants
+* Product attributes
+* Product images
+* Inventory
+* Inventory transactions
+* Wishlists
+* Carts
+* Cart items
+* Orders
+* Order items
+* Order status history
+* Payments
+* Payment transactions
+* Refunds
+* Shipments
+* Shipment tracking
+* Coupons
+* Promotions
+* Product reviews
+* Notifications
+* Audit logs
+
+Do not blindly create every table listed above.
+
+Determine which tables are actually necessary and explain the relationship.
+
+For every table provide:
+
+* Table name
+* Purpose
+* Column name
+* Data type
+* Nullable/non-nullable
+* Primary key
+* Foreign key
+* Default value
+* Unique constraints
+* Check constraints
+* Indexes
+* Relationships
+* Soft-delete requirement
+* Audit requirements
+
+Use UUIDs consistently where appropriate.
+
+---
+
+# PHASE 2A — DATABASE REVIEW GATE
+
+After creating the database model:
+
+STOP.
+
+Do not create:
+
+* React Native screens
+* FastAPI endpoints
+* SQLAlchemy models
+* Business logic
+* Payment integration
+* AWS infrastructure
+
+until the database model has been reviewed and approved by the developer.
+
+Create the following documentation:
+
+```
+docs/
+├── architecture.md
+├── database-design.md
+├── database-erd.md
+├── business-rules.md
+└── api-plan.md
+```
+
+Also provide:
+
+1. ER diagram
+2. Table-by-table explanation
+3. Relationship explanation
+4. Index strategy
+5. Constraints
+6. Important design decisions
+7. Assumptions
+8. Questions requiring developer confirmation
+
+At the end, clearly state:
+
+"PHASE 2 DATABASE REVIEW REQUIRED"
+
+Then STOP and wait for developer feedback.
+
+---
+
+# PHASE 3 — Backend Foundation
+
+Only start after explicit approval of the database design.
+
+Implement:
+
+* FastAPI project
+* PostgreSQL connection
+* SQLAlchemy models
+* Alembic migrations
+* Configuration management
+* Authentication
+* Authorization
+* User management
+* Error handling
+* Logging
+* API versioning
+* Health checks
+* Testing framework
+
+Start with foundational modules before business-specific modules.
+
+---
+
+# PHASE 4 — Backend Modules
+
+Implement modules incrementally.
+
+Recommended order:
+
+1. Authentication
+2. Users
+3. Categories
+4. Brands
+5. Products
+6. Product variants
+7. Inventory
+8. Customer addresses
+9. Cart
+10. Wishlist
+11. Orders
+12. Payments
+13. Shipping
+14. Coupons/promotions
+15. Reviews
+16. Notifications
+17. Admin functionality
+18. Reports
+
+For each module:
+
+1. Database model
+2. Migration
+3. Pydantic schemas
+4. Repository/data-access layer
+5. Service/business layer
+6. API endpoints
+7. Validation
+8. Authorization
+9. Tests
+10. API documentation
+
+Do not mix unrelated modules together.
+
+---
+
+# PHASE 5 — React Native Foundation
+
+After the backend foundation is stable:
+
+Build the React Native application.
+
+Start with:
+
+* Project setup
+* Navigation
+* Theme
+* API client
+* Authentication state
+* Secure storage
+* Error handling
+* Loading states
+* Reusable UI components
+* Form components
+* Network state handling
+* Push notification architecture
+
+---
+
+# PHASE 6 — Mobile Screens
+
+Build screens incrementally.
+
+Initial customer flow:
+
+1. Splash
+2. Onboarding
+3. Login
+4. Registration
+5. OTP/verification
+6. Home
+7. Category listing
+8. Product listing
+9. Product details
+10. Search
+11. Filters
+12. Cart
+13. Address selection
+14. Checkout
+15. Payment
+16. Order confirmation
+17. Order history
+18. Order details
+19. Order tracking
+20. Profile
+21. Wishlist
+22. Notifications
+23. Reviews
+
+The UI should be modern and production-ready.
+
+Do not copy Amazon/Flipkart branding or copyrighted UI assets.
+
+Use an original design system inspired by modern e-commerce UX patterns.
+
+---
+
+# PHASE 7 — Testing
+
+Implement:
+
+## Backend
+
+* Unit tests
+* Service tests
+* Repository tests
+* API tests
+* Authentication tests
+* Authorization tests
+* Order transaction tests
+* Payment webhook tests
+
+## Mobile
+
+* Component tests
+* Navigation tests
+* Authentication flow tests
+* Cart flow tests
+* Checkout flow tests
+
+Also include:
+
+* Validation testing
+* Error scenarios
+* Concurrent transaction scenarios
+* Idempotency testing
+
+---
+
+# PHASE 8 — Production Readiness
+
+Before deployment verify:
+
+* Environment configuration
+* Secrets management
+* Database migrations
+* Logging
+* Monitoring
+* Health checks
+* Error tracking
+* API security
+* Rate limiting
+* Database indexes
+* Docker image
+* Production Docker configuration
+* CI/CD readiness
+
+---
+
+# PHASE 9 — AWS Deployment
+
+Prepare deployment architecture for:
+
+```
+React Native Mobile App
+        |
+        v
+Application Load Balancer
+        |
+        v
+ECS Fargate
+        |
+        +------> RDS PostgreSQL
+        |
+        +------> ElastiCache Redis
+        |
+        +------> S3
+        |
+        +------> SQS/SNS
+        |
+        +------> CloudWatch
+```
+
+Where appropriate, use:
+
+* ECR
+* ECS Fargate
+* ALB
+* RDS PostgreSQL
+* ElastiCache
+* S3
+* CloudFront
+* Route 53
+* Secrets Manager / SSM
+* CloudWatch
+* IAM
+* WAF
+
+Provide infrastructure as code where practical.
+
+AWS architecture should support separate environments:
+
+* Development
+* Staging
+* Production
+
+---
+
+# 18. Coding Standards
+
+Follow these rules:
+
+* TypeScript strict mode
+* Python type hints
+* Clean architecture principles
+* SOLID principles where appropriate
+* Small reusable functions
+* Avoid duplicated logic
+* Meaningful names
+* Clear error messages
+* No hard-coded secrets
+* No hard-coded production URLs
+* Environment-based configuration
+* Proper logging
+* Proper comments only where necessary
+* Avoid over-engineering
+
+Do not introduce unnecessary dependencies.
+
+Before adding a dependency, determine whether existing dependencies can solve the requirement.
+
+---
+
+# 19. API Standards
+
+Use consistent REST conventions.
+
+Example:
+
+```
+GET    /api/v1/products
+GET    /api/v1/products/{id}
+POST   /api/v1/products
+PUT    /api/v1/products/{id}
+PATCH  /api/v1/products/{id}
+DELETE /api/v1/products/{id}
+```
+
+Use standard HTTP status codes.
+
+Implement consistent API response/error structures.
+
+For list APIs support:
+
+* page
+* page_size
+* search
+* sort
+* filters
+
+Avoid returning unnecessarily large payloads.
+
+---
+
+# 20. Financial Data Rules
+
+For:
+
+* Product prices
+* Discounts
+* Taxes
+* Shipping charges
+* Payments
+* Refunds
+* Order totals
+
+Never use floating-point types.
+
+Use appropriate PostgreSQL numeric/decimal types.
+
+All financial operations must be transaction-safe.
+
+---
+
+# 21. Observability
+
+The production system should support:
+
+* Structured logs
+* Request IDs
+* Correlation IDs where appropriate
+* Error tracking
+* API latency monitoring
+* Database monitoring
+* Background job monitoring
+* AWS CloudWatch integration
+
+Never log:
+
+* Passwords
+* Access tokens
+* Refresh tokens
+* Payment credentials
+* Sensitive personal data
+
+---
+
+# 22. Documentation
+
+Maintain documentation throughout development.
+
+Required:
+
+```
+docs/
+├── architecture.md
+├── database-design.md
+├── database-erd.md
+├── api-design.md
+├── business-rules.md
+├── authentication.md
+├── deployment.md
+├── aws-architecture.md
+├── development-guide.md
+└── decisions/
+```
+
+Important architectural decisions should be recorded as ADRs.
+
+---
+
+# 23. Git & Commit Strategy
+
+Use meaningful commits.
+
+Examples:
+
+```
+feat: add product catalog schema
+feat: implement customer authentication
+feat: implement cart APIs
+feat: add product listing screen
+fix: prevent duplicate order creation
+refactor: improve inventory service
+test: add order transaction tests
+```
+
+Do not create one huge commit containing the entire application.
+
+---
+
+# 24. Important Development Rules
+
+1. Do not skip the database review gate.
+2. Do not start frontend development before database approval.
+3. Do not start complex backend implementation before the database design is approved.
+4. Do not make major architectural decisions silently.
+5. If requirements are ambiguous, document the assumption.
+6. Prefer simple scalable architecture over unnecessary microservices.
+7. Do not introduce unnecessary AWS services.
+8. Do not hard-code secrets.
+9. Do not copy proprietary Amazon/Flipkart assets or branding.
+10. Keep the application production-ready from the beginning.
+11. Write tests alongside important business logic.
+12. Keep database migrations version controlled.
+13. Maintain backward compatibility for APIs where practical.
+14. Treat order/payment/inventory operations as critical transactional workflows.
+15. Never assume a payment was successful based only on a client-side response.
+16. Verify payment status server-side.
+17. Design webhook processing to be idempotent.
+18. Protect inventory from overselling through proper transaction/concurrency controls.
+19. Preserve historical order information through snapshots.
+20. Before implementing a new feature, check whether the database, API, backend service, and mobile architecture support it cleanly.
+
+---
+
+# 25. FIRST TASK — START HERE
+
+For now, ONLY perform the following:
+
+### Step 1
+
+Analyze the complete requirements.
+
+### Step 2
+
+Identify:
+
+* Missing requirements
+* Ambiguous requirements
+* Important business decisions
+* Architecture risks
+* Database design risks
+* Security considerations
+
+### Step 3
+
+Create the initial enterprise architecture proposal.
+
+### Step 4
+
+Design the complete PostgreSQL database model.
+
+### Step 5
+
+Create the ERD.
+
+### Step 6
+
+Create database documentation.
+
+### Step 7
+
+Review the proposed schema internally for:
+
+* normalization
+* relationships
+* foreign keys
+* indexes
+* constraints
+* scalability
+* transaction safety
+* future multi-vendor support
+* reporting requirements
+* auditability
+
+### Step 8
+
+Present the database design to the developer for review.
+
+IMPORTANT:
+
+DO NOT START WRITING THE REACT NATIVE FRONTEND.
+
+DO NOT START WRITING THE FASTAPI BUSINESS APIs.
+
+DO NOT START PAYMENT INTEGRATION.
+
+DO NOT START AWS INFRASTRUCTURE.
+
+DO NOT MOVE TO PHASE 3.
+
+STOP after the database design and wait for explicit developer approval.
+
+At the end of your response, provide:
+
+1. Architecture summary
+2. Database domain list
+3. ERD
+4. Table list
+5. Important relationships
+6. Index strategy
+7. Constraints
+8. Assumptions
+9. Open questions
+10. Recommended next steps
+
+Then clearly write:
+
+**DATABASE DESIGN READY FOR DEVELOPER REVIEW**
+
+Wait for my approval before proceeding.
